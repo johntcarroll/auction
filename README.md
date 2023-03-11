@@ -1,10 +1,10 @@
-# Nuxt 3 Minimal Starter
+# March Madness Auction Tool - Nuxt 3
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Setup
 
-Make sure to install the dependencies:
+Install the dependencies:
 
 ```bash
 # yarn
@@ -17,26 +17,22 @@ npm install
 pnpm install
 ```
 
+Install Database via Docker (REDIS):
+
+```bash
+docker run -p 6379:6379 -it redis/redis-stack-server:latest
+```
+
+Load the database:
+
+```bash
+node migration/migrate.js
+```
+
 ## Development Server
 
 Start the development server on http://localhost:3000
 
 ```bash
-npm run dev
+npm run dev -- -o
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
