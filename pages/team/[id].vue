@@ -51,6 +51,55 @@ const setBeGridActive = ({ round, type, pot }) => {
 const activeRound = computed(() => beGridActive.round)
 const activeType = computed(() => beGridActive.type)
 const activePot = computed(() => beGridActive.pot)
+
+const statBoxes = computed(() => [
+  {
+    stat: stats.value.adjustedEfficiencyMargin,
+    rank: null,
+    name: "Adj. Efficiency Margin",
+  },
+  {
+    stat: stats.value.adjustedOffensiveEfficiency,
+    rank: stats.value.adjustedOffensiveEfficiencyRank,
+    name: "Adj. Offensive Efficiency",
+  },
+  {
+    stat: stats.value.adjustedDefensiveEfficiency,
+    rank: stats.value.adjustedDefensiveEfficiencyRank,
+    name: "Adj. Defensive Efficiency",
+  },
+  {
+    stat: stats.value.strengthOfSchedule,
+    rank: stats.value.strengthOfScheduleRank,
+    name: "Strength of Schedule",
+  },
+  {
+    stat: stats.value.opponentAdjustedOffensiveEfficiency,
+    rank: stats.value.opponentAdjustedOffensiveEfficiencyRank,
+    name: "Opp. Adj. Offensive Efficiency",
+  },
+  {
+    stat: stats.value.opponentAdjustedDefensiveEfficiency,
+    rank: stats.value.opponentAdjustedDefensiveEfficiencyRank,
+    name: "Opp. Adj. Defensive Efficiency",
+  },
+  {
+    stat: stats.value.nonConferenceStrengthOfSchedule,
+    rank: stats.value.nonConferenceStrengthOfScheduleRank,
+    name: "Non-Con. Strength of Schedule",
+  },
+  {
+    stat: stats.value.adjustedTempo,
+    rank: stats.value.adjustedTempoRank,
+    name: "Adj. Tempo",
+  },
+  {
+    stat: stats.value.luck,
+    stat: stats.value.luckRank,
+    name: "Luck",
+  },
+])
+
 const route = useRoute()
 id.value = route.params.id
 </script>
@@ -670,73 +719,12 @@ id.value = route.params.id
             </div>
           </div>
           <div class="grid grid-cols-3 grid-rows-3 gap-8 pt-8 py-4">
-            <div class="stat-box">
-              <div class="stat-value">{{ stats.adjustedEfficiencyMargin }}</div>
-              <div class="stat-title">Adj. Efficiency Margin</div>
-            </div>
-            <div class="stat-box">
-              <div
-                class="stat-value"
-                :rank="stats.adjustedOffensiveEfficiencyRank"
-              >
-                {{ stats.adjustedOffensiveEfficiency }}
-              </div>
-              <div class="stat-title">Adj. Offensive Efficiency</div>
-            </div>
-            <div class="stat-box">
-              <div
-                class="stat-value"
-                :rank="stats.adjustedDefensiveEfficiencyRank"
-              >
-                {{ stats.adjustedDefensiveEfficiency }}
-              </div>
-              <div class="stat-title">Adj. Defensive Efficiency</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" :rank="stats.strengthOfScheduleRank">
-                {{ stats.strengthOfSchedule }}
-              </div>
-              <div class="stat-title">Strength of Schedule</div>
-            </div>
-            <div class="stat-box">
-              <div
-                class="stat-value"
-                :rank="stats.opponentAdjustedOffensiveEfficiencyRank"
-              >
-                {{ stats.opponentAdjustedOffensiveEfficiency }}
-              </div>
-              <div class="stat-title">Opp. Adj. Offensive Efficiency</div>
-            </div>
-            <div class="stat-box">
-              <div
-                class="stat-value"
-                :rank="stats.opponentAdjustedDefensiveEfficiencyRank"
-              >
-                {{ stats.opponentAdjustedDefensiveEfficiency }}
-              </div>
-              <div class="stat-title">Opp. Def. Efficiency</div>
-            </div>
-            <div class="stat-box">
-              <div
-                class="stat-value"
-                :rank="stats.nonConferenceStrengthOfScheduleRank"
-              >
-                {{ stats.nonConferenceStrengthOfSchedule }}
-              </div>
-              <div class="stat-title">Non-Con. Strength of Schedule</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" :rank="stats.adjustedTempoRank">
-                {{ stats.adjustedTempo }}
-              </div>
-              <div class="stat-title">Adj. Tempo</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value" :rank="stats.luckRank">
-                {{ stats.luck }}
-              </div>
-              <div class="stat-title">Luck</div>
-            </div>
+            <TeamStat
+              v-for="box in statBoxes"
+              :stat="box.stat"
+              :rank="box.rank"
+              :name="box.name"
+            />
           </div>
         </template>
       </LayoutCard>
@@ -773,25 +761,5 @@ id.value = route.params.id
 
 .value-cell {
   @apply border-r-2 border-b-2 text-sm italic flex justify-center items-center;
-}
-
-.stat-box {
-  @apply flex flex-col;
-}
-
-.stat-value {
-  @apply text-2xl text-center tracking-widest after:content-[attr(rank)];
-}
-
-.stat-value::after {
-  @apply text-sm italic pl-2;
-}
-
-.stat-rank {
-  @apply text-sm italic;
-}
-
-.stat-title {
-  @apply text-center uppercase tracking-wide;
 }
 </style>
