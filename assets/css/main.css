@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply uppercase text-slate-900 dark:text-white tracking-wider;
+  }
+
+  .table {
+    @apply table-auto w-full;
+  }
+
+  .table > tbody {
+  }
+
+  .table > tbody > tr {
+  }
+
+  .table > tbody > tr > td {
+    @apply text-center p-2;
+  }
+
+  .table > thead {
+    @apply uppercase tracking-widest;
+  }
+
+  .table > thead > tr {
+    @apply border-b-2;
+  }
+
+  .table > thead > th {
+    @apply p-2;
+  }
+
+  .table.table-hover > tbody > tr:hover {
+    @apply bg-slate-400 dark:bg-slate-600;
+  }
+
+  .table.table-nav-rows > tbody > tr:hover {
+    @apply cursor-pointer;
+  }
+}
