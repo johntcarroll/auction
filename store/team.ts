@@ -12,6 +12,23 @@ export const useTeamStore = defineStore("teamStore", () => {
   const owned: Ref<boolean | null> = ref(null)
   const sold: Ref<boolean | null> = ref(null)
 
+  interface beGridActive {
+    round: 1 | 2 | 4 | 8 | 16 | null
+    type: "$" | "%" | null
+    pot: "act" | "est" | null
+  }
+  const beGridActive: beGridActive = reactive({
+    round: null,
+    type: null,
+    pot: null,
+  })
+
+  const setBeGridActive = (active: beGridActive) => {
+    beGridActive.round = active.round
+    beGridActive.type = active.type
+    beGridActive.pot = active.pot
+  }
+
   const setTeamDataFromServerResponse = (teamFromServer: team | null) => {
     if (!teamFromServer) return
     team.value = teamFromServer
@@ -142,5 +159,7 @@ export const useTeamStore = defineStore("teamStore", () => {
     setPrice,
     setSold,
     setOwned,
+    setBeGridActive,
+    beGridActive,
   }
 })
