@@ -45,7 +45,7 @@ npm run dev -- -o
 
 ## Stopping Redis
 
-Stop REDIS if you'd like:
+Stop Redis if you'd like:
 
 ```bash
 docker container stop redis
