@@ -23,6 +23,12 @@ Install and Run Redis via Docker in the background:
 docker run --name redis -d -p 6379:6379 redis/redis-stack-server:latest
 ```
 
+You can then run Redis in the future with:
+
+```bash
+docker container start redis
+```
+
 Run database migrations:
 
 ```bash
