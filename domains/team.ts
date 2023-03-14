@@ -6,6 +6,7 @@ export interface team {
   playin?: boolean
   price: number
   sold: boolean
+  elo: number
   owned: boolean
   kenpomRank: number
   name: string
@@ -63,7 +64,7 @@ export async function save(
 export async function getTeams(): Promise<team[]> {
   const client = createClient()
   await client.connect()
-  const keys = await client.keys("*")
+  const keys = await client.keys("team:*")
   const teams = (await Promise.all(
     keys.map((key) => client.json.get(key))
   )) as any

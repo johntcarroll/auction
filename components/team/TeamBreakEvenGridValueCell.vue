@@ -7,16 +7,29 @@ const teamStore = useTeamStore()
 const { payouts } = storeToRefs(useTeamsStore())
 const { chanceToAdvance, beGridActive } = storeToRefs(teamStore)
 const { setBeGridActive } = teamStore
-defineProps({
+const props = defineProps({
   round: { type: Number, required: true },
   type: { type: String, required: true },
   pot: { type: String, required: true },
 })
+const emit = defineEmits(["setDollars"])
+const cellValue = computed(() =>
+  props.type == "%"
+    ? chanceToAdvance.value[props.round]
+    : chanceToAdvance.value[props.round] *
+      (props.pot == "est"
+        ? payouts.value.estimated[props.round]
+        : payouts.value.actual[props.round])
+)
+const emitValue = () => {
+  if (props.type == "$") emit("setDollars", cellValue.value)
+}
 </script>
 <template>
   <div
     @mouseenter="setBeGridActive({ round, type, pot })"
     :class="{
+      'hover:cursor-pointer': type == '$',
       active:
         (beGridActive.round == round &&
           (beGridActive.type == type || beGridActive.type == null) &&
@@ -26,8 +39,11 @@ defineProps({
           beGridActive.type == null),
     }"
     class="value-cell"
+    @click="emitValue"
   >
-    <div v-if="type == '%'">{{ chanceToAdvance[round] * 100 }}%</div>
+    <div v-if="type == '%'">
+      {{ (chanceToAdvance[round] * 100).toFixed(3) }}%
+    </div>
     <div v-else>
       {{
         currencyFormatter.format(

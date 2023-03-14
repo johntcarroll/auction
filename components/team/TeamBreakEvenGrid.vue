@@ -43,6 +43,7 @@ const estimatedValues = [
   { round: 1, type: "%" },
   { round: 1, type: "$" },
 ].map((ev) => ({ ...ev, pot: "est" }))
+defineEmits(["setDollars"])
 </script>
 <template>
   <div
@@ -80,6 +81,7 @@ const estimatedValues = [
       :round="av.round"
       :type="av.type"
       :pot="av.pot"
+      @set-dollars="$emit('setDollars', $event)"
     />
     <div
       @mouseenter="setBeGridActive({ round: null, type: null, pot: 'est' })"
@@ -95,6 +97,7 @@ const estimatedValues = [
       :round="ev.round"
       :type="ev.type"
       :pot="ev.pot"
+      @set-dollars="$emit('setDollars', $event)"
     />
   </div>
 </template>

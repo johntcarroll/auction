@@ -22,13 +22,15 @@ const bottomSeed = computed(() =>
     ? getTeam(props.bottomTeamSeed, props.region)
     : { seed: "?", owned: false, sold: false, name: "" }
 )
+const router = useRouter()
 </script>
 <template>
   <div class="matchup">
     <div
       v-if="topSeed"
       :seed="topSeed.seed"
-      class="home"
+      class="home hover:cursor-pointer"
+      @click="router.push({ path: `/team/${topSeed.id}` })"
       :class="{
         owned: topSeed.owned,
         sold: topSeed.sold && !topSeed.owned,
@@ -39,7 +41,8 @@ const bottomSeed = computed(() =>
     <div
       v-if="bottomSeed"
       :seed="bottomSeed.seed"
-      class="away"
+      class="away hover:cursor-pointer"
+      @click="router.push({ path: `/team/${bottomSeed.id}` })"
       :class="{
         owned: bottomSeed.owned,
         sold: bottomSeed.sold && !bottomSeed.owned,

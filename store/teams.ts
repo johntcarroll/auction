@@ -7,7 +7,7 @@ export const useTeamsStore = defineStore("teamsStore", () => {
   const teamsRemaining = computed(() => {
     return data.value?.filter((team) => !team.sold).length
   })
-  const estimatedPot = ref(5000)
+  const estimatedPot = ref(5234)
 
   const dollarsSpent = computed(() =>
     data.value

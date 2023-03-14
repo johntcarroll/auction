@@ -10,13 +10,13 @@ const columns = ref([
   {
     display: "name",
     name: "name",
-    sort: "asc",
+    sort: null,
     sortable: true,
   },
   {
     display: "seed",
     name: "seed",
-    sort: null,
+    sort: "asc",
     sortable: true,
   },
   {

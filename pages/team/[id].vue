@@ -3,8 +3,12 @@ import { storeToRefs } from "pinia"
 import currencyFormatter from "~~/helpers/currencyFormatter"
 import { useTeamsStore } from "~~/store/teams"
 import { useTeamStore } from "~~/store/team"
+import { useHistoryStore } from "~~/store/history"
 
-const { payouts } = storeToRefs(useTeamsStore())
+const historyStore = useHistoryStore()
+const { seeds, loading: hsLoading, error: hsError } = storeToRefs(historyStore)
+const { getHistory } = historyStore
+const { payouts, totalPot, estimatedPot } = storeToRefs(useTeamsStore())
 
 const { id, price, owned, sold, core, stats, chanceToAdvance, loading, error } =
   storeToRefs(useTeamStore())
@@ -80,18 +84,22 @@ const statBoxes = computed(() => [
   },
   {
     stat: stats.value.luck,
-    stat: stats.value.luckRank,
+    rank: stats.value.luckRank,
     name: "Luck",
   },
 ])
-
+const priceExperiment = ref(0)
+const setDollars = (e) => {
+  priceExperiment.value = e
+}
 const route = useRoute()
 id.value = route.params.id
+getHistory()
 </script>
 <template>
   <div>
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">There was an error.</div>
+    <div v-if="loading || hsLoading">Loading...</div>
+    <div v-else-if="error || hsError">There was an error.</div>
     <div v-else class="flex flex-col">
       <LayoutCard :title="`${core.name} - ${core.conference} (${core.record})`">
         <template #body>
@@ -137,7 +145,80 @@ id.value = route.params.id
               :disabled="loading"
             />
           </div>
-          <TeamBreakEvenGrid />
+          <TeamBreakEvenGrid @set-dollars="setDollars" />
+          <div class="p-4 flex flex-col">
+            <div>
+              <label
+                for="default-range"
+                class="block mb-2 uppercase tracking-widest"
+                >{{ core.seed }} seed price analysis</label
+              >
+              <input
+                id="default-range"
+                type="range"
+                v-model="priceExperiment"
+                :min="0"
+                :max="1000"
+                :step="1"
+                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              />
+            </div>
+          </div>
+          <div class="flex flex-row justify-between p-4 border-b-2">
+            <div class="grid grid-rows-4 grid-cols-2 gap-2 text-center">
+              <h6 class="col-span-2">Lowest All Time</h6>
+              <div class="price-title">% of Pot</div>
+              <div>
+                {{
+                  (seeds[core.seed]?.lowest.percentageOfPot * 100).toFixed(2)
+                }}%
+              </div>
+              <div class="price-title">Team</div>
+              <div>{{ seeds[core.seed]?.lowest.team }}</div>
+              <div class="price-title">Year</div>
+              <div>{{ seeds[core.seed]?.lowest.year }}</div>
+            </div>
+            <div class="grid grid-rows-4 grid-cols-2 gap-2 text-center">
+              <div class="price-title">Price</div>
+              <div>
+                {{ currencyFormatter.format(priceExperiment) }}
+              </div>
+              <div class="price-title">% of Act. Pot</div>
+              <div>
+                {{
+                  (totalPot !== 0
+                    ? (priceExperiment / totalPot) * 100
+                    : 0
+                  ).toFixed(2)
+                }}%
+              </div>
+              <div class="price-title">% of Est. Pot</div>
+              <div>
+                {{
+                  (estimatedPot !== 0
+                    ? (priceExperiment / estimatedPot) * 100
+                    : 0
+                  ).toFixed(2)
+                }}%
+              </div>
+              <div class="price-title">Historical Avg.</div>
+              <div>{{ (seeds[core.seed]?.average * 100).toFixed(2) }}%</div>
+            </div>
+            <div class="grid grid-rows-4 grid-cols-2 gap-2 text-center">
+              <h6 class="col-span-2">Highest All Time</h6>
+              <div class="price-title">% of Pot</div>
+              <div>
+                {{
+                  (seeds[core.seed]?.highest.percentageOfPot * 100).toFixed(2)
+                }}%
+              </div>
+              <div class="price-title">Team</div>
+              <div>{{ seeds[core.seed]?.highest.team }}</div>
+              <div class="price-title">Year</div>
+              <div>{{ seeds[core.seed]?.highest.year }}</div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-3 grid-rows-3 gap-8 pt-8 py-4">
             <TeamStat
               v-for="box in statBoxes"
@@ -154,5 +235,9 @@ id.value = route.params.id
 <style scoped>
 .headline {
   @apply p-4 text-2xl tracking-widest;
+}
+
+.price-title {
+  @apply font-bold italic tracking-wider;
 }
 </style>
